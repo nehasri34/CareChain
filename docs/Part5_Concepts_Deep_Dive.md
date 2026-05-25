@@ -1194,11 +1194,9 @@ This is a known limitation of Docker Desktop on Windows for GPU workloads in Kub
 
 ---
 
-### The fix — WSL2 minikube (post-interview task)
+### WSL2 minikube — attempted and failed
 
-Running minikube directly inside WSL2 instead of through Docker Desktop gives proper GPU access. The RTX 3090 is already accessible in WSL2 as confirmed by `nvidia-smi`.
-
-The steps:
+Running minikube directly inside WSL2 was attempted as an alternative to Docker Desktop. The steps were:
 
 ```bash
 # install minikube in WSL2
@@ -1212,11 +1210,9 @@ minikube delete --purge
 minikube start --driver=docker --gpus=all
 ```
 
-The `--purge` flag removes all certificates and state — necessary because the Windows minikube certificates conflict with WSL2.
+Result: the NVIDIA device plugin still reported zero GPU capacity. The same failure as the Docker Desktop approach — the extra container boundary introduced by minikube blocks GPU access regardless of which Docker daemon is used.
 
-After this, all commands run from the WSL2 terminal instead of PowerShell.
-
-**Note:** this replaces the Windows minikube cluster. You cannot run both simultaneously.
+See the final conclusion below for the full summary of all approaches.
 
 ---
 
@@ -1232,7 +1228,7 @@ docker compose -f infra/docker-compose.yml up -d
 uvicorn api.main:app --reload
 ```
 
-Kubernetes manifests are complete and correct. The only limitation is GPU scheduling on Windows minikube. Once the WSL2 minikube setup is done, all four pods will run with full GPU support.
+Kubernetes manifests are complete and correct. GPU scheduling on Windows is not possible via any approach — all three paths (Docker Desktop + PowerShell, Docker Desktop + WSL2, native Docker in WSL2) were attempted and failed. Full GPU support in Kubernetes requires native Linux (dual boot).
 
 ---
 

@@ -122,7 +122,7 @@ Covers: flexibility across deployment models and understanding of cost managemen
 
 ### Infrastructure and cloud deployment
 
-The system currently runs locally via Docker Compose. The Kubernetes manifests are written but Ollama cannot run on GPU in Kubernetes on Windows due to Docker Desktop virtualisation limitations.
+The system currently runs locally via Docker Compose. The Kubernetes manifests are written but Ollama cannot run on GPU in Kubernetes on Windows — all three approaches (Docker Desktop + PowerShell, Docker Desktop + WSL2, native Docker in WSL2) were attempted and failed. Native Linux is required for local GPU scheduling in Kubernetes.
 
 **PersistentVolumeClaims** — replace emptyDir volumes in Kubernetes manifests with PersistentVolumeClaims for Qdrant and Ollama. This ensures data survives pod restarts and is production-safe.
 
