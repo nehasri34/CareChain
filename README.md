@@ -317,7 +317,6 @@ You can also start docker containers and the agent by running:
 run_agent.bat
 ```
 
-
 ---
 
 ### Option 3: Local Kubernetes with minikube
@@ -342,6 +341,23 @@ http://localhost/docs
 
 Note: Ollama GPU scheduling requires WSL2 minikube on Windows.
 Full GPU support on Linux and AKS.
+
+---
+
+## Remote access
+
+The system runs fully on-prem on an RTX 3090. For remote access 
+without exposing ports to the public internet, the host joins a 
+Tailscale network and becomes reachable from anywhere via SSH. 
+Any device on the same Tailscale network can SSH in and run the 
+agent directly, regardless of physical location.
+
+No code changes required. Tailscale handles NAT traversal and 
+encryption at the network layer.
+
+Setup: [tailscale.com/download](https://tailscale.com/download).
+Install on the host and any client device, sign in to the same 
+account, done.
 
 ---
 
