@@ -5,3 +5,4 @@ qdrant-client
 httpx
 python-multipart
 mcp
+pytest

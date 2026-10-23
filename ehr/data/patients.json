@@ -1,0 +1,146 @@
+{
+  "dataset": "CareChain fictional EHR prototype",
+  "disclaimer": "ALL RECORDS ARE COMPLETELY FICTIONAL. Names, identifiers, diagnoses, medications, allergies, and lab results are invented for software demonstration only. This is not real PHI and must never be treated as clinical data.",
+  "patients": [
+    {
+      "patient_id": "PAT-001",
+      "demographics": {
+        "full_name": "Mira Langford",
+        "date_of_birth": "1978-06-21",
+        "sex": "female",
+        "city": "Hartford",
+        "state": "CT"
+      },
+      "diagnoses": [
+        {
+          "code": "E11.9",
+          "description": "Type 2 diabetes mellitus without complications",
+          "status": "active",
+          "onset_date": "2019-04-08"
+        },
+        {
+          "code": "E78.5",
+          "description": "Hyperlipidemia, unspecified",
+          "status": "active",
+          "onset_date": "2021-11-02"
+        }
+      ],
+      "medications": [
+        {
+          "name": "metformin",
+          "dose": "500 mg",
+          "route": "oral",
+          "frequency": "twice daily",
+          "status": "active"
+        },
+        {
+          "name": "atorvastatin",
+          "dose": "20 mg",
+          "route": "oral",
+          "frequency": "once daily at bedtime",
+          "status": "active"
+        }
+      ],
+      "allergies": [
+        {
+          "substance": "penicillin",
+          "reaction": "urticaria",
+          "severity": "moderate"
+        }
+      ],
+      "lab_results": [
+        {
+          "test_name": "HbA1c",
+          "value": 7.1,
+          "unit": "%",
+          "reference_range": "4.0-5.6",
+          "collected_on": "2026-08-15"
+        },
+        {
+          "test_name": "LDL cholesterol",
+          "value": 118,
+          "unit": "mg/dL",
+          "reference_range": "<100",
+          "collected_on": "2026-08-15"
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-002",
+      "demographics": {
+        "full_name": "Julian Okonkwo",
+        "date_of_birth": "1991-11-03",
+        "sex": "male",
+        "city": "Providence",
+        "state": "RI"
+      },
+      "diagnoses": [
+        {
+          "code": "J45.909",
+          "description": "Unspecified asthma, uncomplicated",
+          "status": "active",
+          "onset_date": "2005-09-14"
+        }
+      ],
+      "medications": [
+        {
+          "name": "albuterol",
+          "dose": "90 mcg",
+          "route": "inhaled",
+          "frequency": "2 puffs every 4-6 hours as needed",
+          "status": "active"
+        }
+      ],
+      "lab_results": [
+        {
+          "test_name": "WBC",
+          "value": 6.4,
+          "unit": "10^3/uL",
+          "reference_range": "4.5-11.0",
+          "collected_on": "2026-07-22"
+        },
+        {
+          "test_name": "serum potassium",
+          "value": 4.1,
+          "unit": "mmol/L",
+          "reference_range": "3.5-5.1",
+          "collected_on": "2026-07-22"
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-003",
+      "demographics": {
+        "full_name": "Priya Voss",
+        "date_of_birth": "1966-01-30",
+        "sex": "female",
+        "city": "Burlington",
+        "state": "VT"
+      },
+      "diagnoses": [
+        {
+          "code": "N18.30",
+          "description": "Chronic kidney disease, stage 3 unspecified",
+          "status": "active",
+          "onset_date": "2020-02-18"
+        }
+      ],
+      "medications": [
+        {
+          "name": "lisinopril",
+          "dose": "10 mg",
+          "route": "oral",
+          "frequency": "once daily",
+          "status": "active"
+        }
+      ],
+      "allergies": [
+        {
+          "substance": "shellfish",
+          "reaction": "anaphylaxis",
+          "severity": "severe"
+        }
+      ]
+    }
+  ]
+}
