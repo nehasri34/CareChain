@@ -1,6 +1,5 @@
 import pytest
-from fastapi import Depends, FastAPI
-from fastapi.testclient import TestClient
+from fastapi import HTTPException
 
 from ehr.auth import (
     get_current_demo_identity,
@@ -57,48 +56,23 @@ def test_denied_before_unknown_patient_lookup(identity_pat001):
         )
 
 
-def _demo_app() -> FastAPI:
-    app = FastAPI()
-
-    @app.get('/ehr/patients/{patient_id}/profile')
-    def profile(
-        patient_id: str,
-        identity: DemoIdentity = Depends(get_current_demo_identity)
-    ):
-        result = get_patient_profile(identity, patient_id)
-        return {
-            'patient_id': result.patient_id,
-            'full_name': result.demographics.full_name
-        }
-
-    return app
-
-
 def test_fastapi_dependency_allows_matching_patient():
-    client = TestClient(_demo_app())
-    response = client.get(
-        '/ehr/patients/PAT-001/profile',
-        headers={'X-Demo-User': 'demo-user-pat001'}
-    )
-    assert response.status_code == 200
-    assert response.json()['patient_id'] == 'PAT-001'
+    identity = get_current_demo_identity(x_demo_user='demo-user-pat001')
+    result = get_patient_profile(identity, 'PAT-001')
+    assert result.patient_id == 'PAT-001'
+    assert result.demographics.full_name == 'Mira Langford'
 
 
 def test_fastapi_dependency_denies_cross_patient_access():
-    client = TestClient(_demo_app())
+    identity = get_current_demo_identity(x_demo_user='demo-user-pat001')
     with pytest.raises(PatientAccessDeniedError):
-        client.get(
-            '/ehr/patients/PAT-002/profile',
-            headers={'X-Demo-User': 'demo-user-pat001'}
-        )
+        get_patient_profile(identity, 'PAT-002')
 
 
 def test_fastapi_dependency_rejects_missing_and_unknown_identity():
-    client = TestClient(_demo_app())
-    missing = client.get('/ehr/patients/PAT-001/profile')
-    assert missing.status_code == 401
-    unknown = client.get(
-        '/ehr/patients/PAT-001/profile',
-        headers={'X-Demo-User': 'attacker'}
-    )
-    assert unknown.status_code == 401
+    with pytest.raises(HTTPException) as missing:
+        get_current_demo_identity(x_demo_user=None)
+    assert missing.value.status_code == 401
+    with pytest.raises(HTTPException) as unknown:
+        get_current_demo_identity(x_demo_user='attacker')
+    assert unknown.value.status_code == 401

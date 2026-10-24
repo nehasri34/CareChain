@@ -1,6 +1,20 @@
-import httpx
-from mcp.server.fastmcp import FastMCP
+import sys
 from pathlib import Path
+
+from mcp.server.fastmcp import FastMCP
+
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+import httpx
+from mcp_server.ehr_tools import (
+    get_patient_allergies_tool,
+    get_patient_diagnoses_tool,
+    get_patient_lab_results_tool,
+    get_patient_medications_tool,
+    get_patient_profile_tool,
+)
 
 mcp = FastMCP('ClinicalRAG')
 API_URL = "http://localhost:8000"
@@ -51,6 +65,52 @@ async def ingest_document(file_path: str) -> str:
         data = response.json()
 
     return f"Indexed {data['filename']} into {data['chunks']} chunks."
+
+
+@mcp.tool(name='get_patient_profile')
+def get_patient_profile(patient_id: str) -> dict:
+    """Read-only: return the fictional patient's profile.
+
+    Authorization uses the MCP server process identity
+    (CARECHAIN_MCP_DEMO_USER). patient_id is not authorization.
+    """
+    return get_patient_profile_tool(patient_id)
+
+
+@mcp.tool(name='get_patient_medications')
+def get_patient_medications(patient_id: str) -> dict:
+    """Read-only: return the fictional patient's medications.
+
+    Authorization uses CARECHAIN_MCP_DEMO_USER, not patient_id.
+    """
+    return get_patient_medications_tool(patient_id)
+
+
+@mcp.tool(name='get_patient_allergies')
+def get_patient_allergies(patient_id: str) -> dict:
+    """Read-only: return the fictional patient's allergies.
+
+    Authorization uses CARECHAIN_MCP_DEMO_USER, not patient_id.
+    """
+    return get_patient_allergies_tool(patient_id)
+
+
+@mcp.tool(name='get_patient_diagnoses')
+def get_patient_diagnoses(patient_id: str) -> dict:
+    """Read-only: return the fictional patient's diagnoses.
+
+    Authorization uses CARECHAIN_MCP_DEMO_USER, not patient_id.
+    """
+    return get_patient_diagnoses_tool(patient_id)
+
+
+@mcp.tool(name='get_patient_lab_results')
+def get_patient_lab_results(patient_id: str) -> dict:
+    """Read-only: return the fictional patient's lab results.
+
+    Authorization uses CARECHAIN_MCP_DEMO_USER, not patient_id.
+    """
+    return get_patient_lab_results_tool(patient_id)
 
 if __name__ == '__main__':
     mcp.run()

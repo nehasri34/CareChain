@@ -6,12 +6,25 @@ This is NOT production authentication.
 - Demo callers present a known user id (X-Demo-User when used with FastAPI).
 - Access is decided only from that authenticated demo identity's allow-list.
 - A user-supplied patient ID is never treated as proof of access.
+
+MCP stdio limitation:
+The current MCP server is launched over stdio (see agent/agent.py). That
+transport does not authenticate the client. FastMCP Context.client_id is
+optional request _meta and is caller-controlled. FastMCP OAuth applies to
+HTTP transports, not this stdio setup. MCP tools therefore use the
+operator-configured CARECHAIN_MCP_DEMO_USER environment variable on the
+server process. That is a demo-only identity binding, not secure
+authentication. A tool argument such as user_id must never be treated as auth.
 '''
+
+import os
 
 from fastapi import Header, HTTPException
 
 from ehr.exceptions import PatientAccessDeniedError, UnknownDemoUserError
 from ehr.models import DemoIdentity
+
+MCP_DEMO_USER_ENV = 'CARECHAIN_MCP_DEMO_USER'
 
 # Each demo user may access only the listed fictional patient IDs.
 DEMO_ACCESS = {
@@ -26,6 +39,19 @@ def resolve_demo_identity(user_id: str) -> DemoIdentity:
     if allowed is None:
         raise UnknownDemoUserError(user_id)
     return DemoIdentity(user_id=user_id, allowed_patient_ids=allowed)
+
+
+def get_mcp_demo_identity() -> DemoIdentity:
+    '''
+    Resolve the demo identity for MCP patient tools.
+
+    Reads CARECHAIN_MCP_DEMO_USER from the MCP server environment. This is
+    operator configuration for the prototype, not a verified client identity.
+    '''
+    user_id = os.environ.get(MCP_DEMO_USER_ENV, '').strip()
+    if not user_id:
+        raise UnknownDemoUserError(f'(unset {MCP_DEMO_USER_ENV})')
+    return resolve_demo_identity(user_id)
 
 
 def require_patient_access(identity: DemoIdentity, patient_id: str) -> None:
